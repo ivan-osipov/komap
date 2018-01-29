@@ -1,0 +1,80 @@
+= Komap
+
+Type Safe Kotlin Entity Mapper
+
+image::https://img.shields.io/badge/version-0.1-green.svg?style=flat[license]
+[link=http://www.apache.org/licenses/LICENSE-2.0]
+image::https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat[license]
+image::https://img.shields.io/badge/Compatible Java-1.6%2B-orange.svg?style=flat[license]
+
+All what you need for mapping in most cases is a simple mapping whose implementation takes about one hundred lines.
+
+This project contains link:(/src/main/kotlin/com/github/ivan_osipov/komap)[one file] which solves most popular entity mapping problems.
+
+The simplest but same time extremely functional example below:
+
+[source,kotlin]
+----
+include::./src/test/kotlin/samples/SimpleMappingKotlinModel.kt[tag=createMapping, indent=0]
+----
+
+Let's discuss what is there.
+
+First of all we define space of a mapping DSL, inside it we write our mapping rules.
+There are two mapping rules for types: _plain_ and _smart_. Plain is the typical rule when we create one to one mapping,
+we just map one field to other field. We use _smart_ when we want to create some custom mapping from one type to another.
+For example, we flatten instance of KAddress class to simple String. In a smart's lambda definition we work with a source
+instance like in a source class method, we have access to _this_ keyword, but only to public api of the source class.
+
+When we talk about _plain_ rule we can use field rules for map one field of first entity to other field of second entity.
+For type safe control we divide two field rules: _strict_ and _flexible_. I recommend use _strict_ by default if you can.
+Strict rule checks types of source and destination property in compile time, otherwise _flexible_
+property rule will discover other (not equal) types in mapping time and if it isn't found your mapper will throw an exception.
+
+For usage of mapping rules we just invoke mapTo method:
+
+[source,kotlin]
+----
+include::./src/test/kotlin/samples/SimpleMappingKotlinModel.kt[tag=mapData, indent=0]
+----
+
+As result, userDto can be printed like this:
+
+----
+UserDto(name='mr_holmes', plainAddress='UK London Baker Street')
+----
+
+== Java Compatibility
+Of course, it works for java entity model. When we talk about Java we operate with getters and setters and changes are really
+minimalist.
+
+[source,java]
+----
+include::./src/test/kotlin/samples/SimpleMappingJavaModel.kt[tag=fieldMappingChanges, indent=0]
+----
+
+== I want!
+
+How to use it? Dependency is not necessary! Just copy link:(/src/main/kotlin/com/github/ivan_osipov/komap)[one file] to
+your project. You can rename some parts or package, it is up to you.
+
+== Issues
+
+1. Need to add context-dependent mapping. For example, "We use KAddress -> String only if we map KUser to UserDto"
+
+== License
+
+Copyright 2018 Ivan Osipov
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
