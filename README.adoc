@@ -9,13 +9,21 @@ image::https://img.shields.io/badge/Compatible Java-1.6%2B-orange.svg?style=flat
 
 All what you need for mapping in most cases is a simple mapping whose implementation takes about one hundred lines.
 
-This project contains link:(/src/main/kotlin/com/github/ivan_osipov/komap)[one file] which solves most popular entity mapping problems.
+This project contains https://github.com/ivan-osipov/komap/blob/master/src/main/kotlin/com/github/ivan_osipov/komap/komap.kt[one file] which solves most popular entity mapping problems.
 
 The simplest but same time extremely functional example below:
 
 [source,kotlin]
 ----
-include::./src/test/kotlin/samples/SimpleMappingKotlinModel.kt[tag=createMapping, indent=0]
+val mapper = mapping {
+    plain<KUser, KUserDto> {
+        strict(KUser::username, KUserDto::name)
+        flexible(KUser::address, KUserDto::plainAddress)
+    }
+    smart<KAddress, String> {
+        "$country $city $street"
+    }
+}
 ----
 
 Let's discuss what is there.
@@ -35,7 +43,9 @@ For usage of mapping rules we just invoke mapTo method:
 
 [source,kotlin]
 ----
-include::./src/test/kotlin/samples/SimpleMappingKotlinModel.kt[tag=mapData, indent=0]
+val user = KUser("mr_holmes", KAddress("UK", "London", "Baker Street"))
+
+val userDto: KUserDto = mapper.mapTo(user)
 ----
 
 As result, userDto can be printed like this:
@@ -50,12 +60,15 @@ minimalist.
 
 [source,java]
 ----
-include::./src/test/kotlin/samples/SimpleMappingJavaModel.kt[tag=fieldMappingChanges, indent=0]
+plain<JUser, JUserDto> {
+    strict(JUser::getUsername, JUserDto::setName)
+    flexible(JUser::getAddress, JUserDto::setPlainAddress)
+}
 ----
 
 == I want!
 
-How to use it? Dependency is not necessary! Just copy link:(/src/main/kotlin/com/github/ivan_osipov/komap)[one file] to
+How to use it? Dependency is not necessary! Just copy https://github.com/ivan-osipov/komap/blob/master/src/main/kotlin/com/github/ivan_osipov/komap/komap.kt[one file] to
 your project. You can rename some parts or package, it is up to you.
 
 == Issues
