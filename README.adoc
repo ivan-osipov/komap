@@ -2,7 +2,7 @@
 
 Type Safe Kotlin Entity Mapper
 
-image::https://img.shields.io/badge/version-0.1-green.svg?style=flat[license]
+image::https://img.shields.io/badge/version-0.2.0-green.svg?style=flat[license]
 [link=http://www.apache.org/licenses/LICENSE-2.0]
 image::https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat[license]
 image::https://img.shields.io/badge/Compatible Java-1.6%2B-orange.svg?style=flat[license]
@@ -52,6 +52,38 @@ As result, userDto can be printed like this:
 
 ----
 UserDto(name='mr_holmes', plainAddress='UK London Baker Street')
+----
+
+== Expansion
+
+For different mappers common mapping can exist or you can looking for way to extract a part of mapping to other file.
+Solution is `expand` function. It helps you to expand your mapping rules with other ones. Simple example is bellow.
+
+[source,kotlin]
+----
+val DateTimeMappings = mapping {
+    smart<Date, LocalDate> {
+        toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+    }
+    smart<Date, LocalTime> {
+        toInstant().atZone(ZoneId.systemDefault()).toLocalTime()
+    }
+}
+----
+
+Define your common mapping (for example date mapping) and use it where necessary.
+
+[source,kotlin]
+----
+val mapper = mapping {
+    expand(DateTimeMappings) //using predefined mappings
+
+    plain<Order, LocalOrder> {
+        strict(Order::name, LocalOrder::name)
+        flexible(Order::date, LocalOrder::date) //Date -> LocalDate
+        flexible(Order::time, LocalOrder::time) //Time -> LocalTime
+    }
+}
 ----
 
 == Java Compatibility

@@ -1,4 +1,4 @@
-package com.github.ivan_osipov.komap
+package com.github.komap
 
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
@@ -7,18 +7,22 @@ typealias Mappings = MutableMap<KClass<*>, MutableMap<KClass<*>, TypeMapping<*, 
 
 fun mapping(init: Mapper.() -> Unit) = Mapper().apply { init() }
 
-class Mapper {
+class Mapping(val mappings: Mappings = HashMap()) {
+    fun merge(otherMapping: Mapping) = mappings.putAll(otherMapping.mappings)
+}
 
-    val mappings: Mappings = HashMap()
+open class Mapper(val mapping: Mapping = Mapping()) {
+
+    fun expand(vararg extensions: Mapper) = extensions.forEach { this.mapping.merge(it.mapping) }
 
     inline fun <reified T : Any, reified R : Any> plain(init: TypeMapping<T, R>.() -> Unit = {}) {
         val typeMapping = TypeMapping<T, R>()
         typeMapping.init()
-        mappings[T::class, R::class] = typeMapping
+        mapping.mappings[T::class, R::class] = typeMapping
     }
 
     inline fun <reified T : Any, reified R : Any> smart(noinline mapping: T.() -> R) {
-        mappings[T::class, R::class] = TypeMapping(mapping)
+        this.mapping.mappings[T::class, R::class] = TypeMapping(mapping)
     }
 
     inline fun <reified T: Any, reified R: Any> mapTo(source: T): R {
@@ -26,7 +30,7 @@ class Mapper {
     }
 
     fun <T: Any, R: Any> mapTo(classT: KClass<T>, classR: KClass<R>, source: T): R {
-        return mappings[classT, classR]?.let { typeMapping ->
+        return this.mapping.mappings[classT, classR]?.let { typeMapping ->
             typeMapping.customMapping?.let { customMapping ->
                 @Suppress("UNCHECKED_CAST")
                 val mapping = customMapping as T.() -> R

@@ -1,6 +1,6 @@
 package samples
 
-import com.github.ivan_osipov.komap.mapping
+import com.github.komap.mapping
 import modelA.JAddress
 import modelA.JUser
 import modelB.JUserDto
@@ -8,12 +8,12 @@ import modelB.JUserDto
 fun main(args: Array<String>) {
 
     val mapper = mapping {
-        // tag::fieldMappingChanges[]
+
         plain<JUser, JUserDto> {
             strict(JUser::getUsername, JUserDto::setName)
             flexible(JUser::getAddress, JUserDto::setPlainAddress)
         }
-        // end::fieldMappingChanges[]
+
         smart<JAddress, String> {
             "$country $city $street"
         }
