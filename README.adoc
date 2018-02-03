@@ -1,3 +1,6 @@
+
+:komap_link: https://github.com/ivan-osipov/komap/blob/master/src/main/kotlin/com/github/komap/komap.kt
+
 = Komap
 
 Type Safe Kotlin Entity Mapper
@@ -9,7 +12,7 @@ image::https://img.shields.io/badge/Compatible Java-1.6%2B-orange.svg?style=flat
 
 All what you need for mapping in most cases is a simple mapping whose implementation takes about one hundred lines.
 
-This project contains https://github.com/ivan-osipov/komap/blob/master/src/main/kotlin/com/github/ivan_osipov/komap/komap.kt[one file] which solves most popular entity mapping problems.
+This project contains {komap_link}[one file] which solves most popular entity mapping problems.
 
 The simplest but same time extremely functional example below:
 
@@ -100,7 +103,7 @@ plain<JUser, JUserDto> {
 
 == I want!
 
-How to use it? Dependency is not necessary! Just copy https://github.com/ivan-osipov/komap/blob/master/src/main/kotlin/com/github/ivan_osipov/komap/komap.kt[one file] to
+How to use it? Dependency is not necessary! Just copy {komap_link}[one file] to
 your project. You can rename some parts or package, it is up to you.
 
 == Issues
